@@ -1,0 +1,51 @@
+<div *ngIf="bookDetail.data">
+    <div>
+        Title: {{ bookDetail.data.title }}
+    </div>
+    <br>
+    <div>
+        Edition: {{ bookDetail.data.edition }}
+    </div>
+    <br>
+    <div>
+        Format: {{ bookDetail.data.format }}
+    </div>
+    <br>
+    <div>
+        {{ bookDetail.data.authors.join(', ') }}
+    </div>
+    <br>
+    <div>
+        Number of pages: {{ bookDetail.data.pages }}
+    </div>
+    <br>
+    <div>
+        {{ bookDetail.data.description }}
+    </div>
+    <br>
+    <div>
+        Rating: {{ bookDetail.data.rating }}
+    </div>
+    <br>
+    <div>
+        Rating count: {{ bookDetail.data.rating_count }}
+    </div>
+    <br>
+    <div>
+        Review count: {{ bookDetail.data.review_count }}
+    </div>
+    <br>
+    <div>
+        {{ bookDetail.data.genres.join(', ') }}
+    </div>
+    <br>
+    <div>
+        <img [src]="bookDetail.data.image_url">
+    </div>
+
+</div>
+
+<br>
+<div>
+    <button type="button" (click)="back()">Back to search page</button>
+</div>

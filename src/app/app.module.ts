@@ -10,12 +10,14 @@ import { AppComponent } from './app.component';
 import { SearchComponent } from './components/search.component';
 import { BookListComponent } from './components/book-list.component';
 import { BookService } from './book.service';
+import { BookdetailComponent } from './components/bookdetail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchComponent,
-    BookListComponent
+    BookListComponent,
+    BookdetailComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,

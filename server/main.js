@@ -18,14 +18,15 @@ const PORT = parseInt(process.argv[2] || process.env.APP_PORT) || 3001;
 // Query phrases
 // Search in title and authors fields. Params: [ %ST%, %ST%, limit offset ]
 const query_Phrase_For_Title_And_Authors = 'select * from book2018 where (title like ? or authors like ?) limit ? offset ?';
-// dont forget is '%SEARCHTERM%'
 // Search in title and authors fields, return the total count as total. Params: [ %ST%, %ST% ]
 const query_Phrase_For_Search_Count = 'select count(*) as total from book2018 where (title like ? or authors like ?)';
-
+// Search books via bookid. Params: [ 'bookId' ]
+const query_Phrase_For_Search_Book = 'select * from book2018 where book_id = ?'
 
 // Query functions
 const queryTitleOrAuthors = mkQuery(query_Phrase_For_Title_And_Authors, pool);
 const queryTitleOrAuthorsTotalCount = mkQuery(query_Phrase_For_Search_Count, pool);
+const queryBook = mkQuery(query_Phrase_For_Search_Book, pool);
 
 // || Configuration and create an instance of the express application
 const app = express();
@@ -45,19 +46,9 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.urlencoded());
 
-// Testing
-queryTitleOrAuthors([ `%king%`, `%king%`, 10, 0 ])
-.then(result => {
-    // object result
-    console.log(typeof result);
-})
-.catch(err => console.log(err));
-
-// console.log((new Date()).getTime())
-
-
-
 // || Define requests the app will be handling
+
+// Conduct a search with parameters: terms, limit and offset
 app.get('/api/search', (req, res) => {
     // Check if terms is undefined, return error if undefined
     if (!req.query.terms) {
@@ -80,7 +71,7 @@ app.get('/api/search', (req, res) => {
             return({
                 book_id: v.book_id,
                 title: v.title,
-                authors: v.authors,
+                authors: v.authors.split('|'),
                 rating: v.rating
             });
         });
@@ -108,7 +99,41 @@ app.get('/api/search', (req, res) => {
     })
 })
 
-
+// Get a book's details
+app.get('/api/book/:bookid', (req, res) => {
+    // Gets the id of the book
+    const bookId = req.params.bookid;
+    console.log('This is bookId: ', bookId);
+    // Query the book from database
+    queryBook([ bookId ])
+    .then(result => {
+        // Convert to object
+        const tempResult = result[0];
+        const data = {
+                book_id: tempResult.book_id,
+                title: tempResult.title,
+                authors: tempResult.authors.split('|'),
+                description: tempResult.description,
+                edition: tempResult.edition,
+                format: tempResult.format,
+                pages: tempResult.pages,
+                rating: tempResult.rating,
+                rating_count: tempResult.rating_count,
+                review_count: tempResult.review_count,
+                genres: tempResult.genres.split('|'),
+                image_url: tempResult.image_url
+            }
+        res.status(200).json({ data: data, timestamp: (new Date()).getTime() });
+    })
+    .catch(err => {
+        console.log(err);
+        res.json({
+            status: 404,
+            message: 'Not found!',
+            timestamp: (new Date()).getTime()
+        })
+    })
+})
 
 // !!! Add error.html!
 // Catch-all

@@ -11,15 +11,9 @@ import { BookService } from '../book.service';
 })
 export class SearchComponent implements OnInit {
 
-  constructor(private router: Router, private booksvc: BookService) { }
+  constructor(private router: Router) { }
 
-  ngOnInit() {
-    this.booksvc.getBooks({ terms: 'king', limit: 10, offset: 0 })
-    .then(results => {
-      console.log(results);
-    })
-    .catch(err => { error: err})
-  }
+  ngOnInit() { }
 
   search(form: NgForm) {
     this.router.navigate([ '/books' ], { state: form.value as SearchCriteria });
