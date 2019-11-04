@@ -1,0 +1,35 @@
+<div class="author-rating">
+  <div>
+    <button type="button" (click)="back()">Back</button>
+  </div>
+  <div *ngIf="books?.data.length">
+    <button type="button" (click)="previous()">Previous</button>
+    <button type="button" (click)="next()">Next</button>
+  </div>
+</div>
+
+<div *ngIf="!books?.data.length">
+  <h2>Your search of '{{ books?.terms }}' did not return any result</h2>
+</div>
+
+<div *ngIf="books?.data.length">
+  <div class="book-item" *ngFor="let b of books?.data" (click)="bookDetails(b.book_id)">
+    <div class="title"> <code>{{ b.title }}</code> </div>
+    <div class="author-rating">
+      <span>
+        By <i *ngFor="let a of b.authors"> {{ a }} </i>
+      </span>
+      <span> Rating: {{ b.rating }} </span>
+    </div>
+  </div>
+</div>
+
+<div class="author-rating" *ngIf="books?.data.length">
+  <div>
+    <button type="button" (click)="back()">Back</button>
+  </div>
+  <div>
+    <button type="button" (click)="previous()">Previous</button>
+    <button type="button" (click)="next()">Next</button>
+  </div>
+</div>

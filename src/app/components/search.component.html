@@ -1,0 +1,27 @@
+
+<h2>Book Search</h2>
+
+<form #form="ngForm" (ngSubmit)="search(form)" class="row">
+  <div class="row space-below">
+    <label for="terms">Search Author or Title</label>
+    <input type="text" name="terms" id="terms" placeholder="Enter your search terms"
+        required ngModel>
+  </div>
+
+  <div class="row space-below">
+    <label for="limit">Number of Results</label>
+    <select name="limit" id="limit" [(ngModel)]="limit">
+      <option [value]="i" *ngFor="let i of [ 5, 10, 20, 50 ]">
+        {{i}}
+      </option>
+    </select>
+  </div>
+
+  <div class="column">
+    <button type="reset" class="space-left">Clear</button>
+    <button type="submit" class="space-left" [disabled]="form.invalid">
+      Search
+    </button>
+  </div>
+
+</form>

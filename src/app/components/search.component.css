@@ -1,0 +1,25 @@
+.row {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.column {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.space-below  {
+  margin-bottom: 10px;;
+}
+
+.space-left {
+  margin-left: 10px;
+}
+
+label {
+  font-weight: bold;
+  color: blue;
+  font-family: 'Courier New', Courier, monospace;
+}

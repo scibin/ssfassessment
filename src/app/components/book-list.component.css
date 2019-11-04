@@ -1,0 +1,25 @@
+.book-item {
+  padding: 5px;
+  border-bottom: 1px solid brown;
+  margin-bottom: 5px;
+  transition-property: background;
+  transition-duration: 300ms;
+  transition-timing-function: linear;
+}
+
+.book-item:hover {
+  background: lightgray;
+}
+
+.title {
+  font-size: 1.2em;
+  font-weight: bolder;
+}
+
+.author-rating {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+
