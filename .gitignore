@@ -44,3 +44,9 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Server side files
+server/node_modules
+server/package-lock.json
+server/config.js
+server/database.js
