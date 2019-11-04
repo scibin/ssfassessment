@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BookService } from '../book.service';
-import { BookResponse } from '../models';
+import { BookResponse, ReviewResponse, Review } from '../models';
 
 @Component({
   selector: 'app-bookdetail',
@@ -10,7 +10,7 @@ import { BookResponse } from '../models';
 })
 export class BookdetailComponent implements OnInit {
 
-  // Initialize object container
+  // Initialize object containers
   bookDetail: BookResponse = {
     data: {
       book_id: '',
@@ -29,16 +29,23 @@ export class BookdetailComponent implements OnInit {
     timestamp: 1
   };
 
+  bookReviews: ReviewResponse = {
+    data: [],
+    timestamp: 1
+  }
+
   constructor(private activatedRoute: ActivatedRoute,
     private booksvc: BookService, private router: Router) { }
 
   ngOnInit() {
     const bookId = this.activatedRoute.snapshot.params.bookid;
-    console.log('Book ID is: ', bookId);
-    this.booksvc.getBook(bookId)
-    .then(result => {
-      console.log('This is bookresponse', result);
-      this.bookDetail = result;
+    // Use promise all for 2 promises
+    // Promise 1: Get book details
+    // Promise 2: Get book reviews
+    Promise.all([this.booksvc.getBook(bookId), this.booksvc.getBookReviews(bookId)])
+    .then(results => {
+      this.bookDetail = results[0];
+      this.bookReviews = results[1];
     })
   }
 

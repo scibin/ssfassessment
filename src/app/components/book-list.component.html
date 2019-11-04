@@ -3,8 +3,8 @@
     <button type="button" (click)="back()">Back</button>
   </div>
   <div *ngIf="books?.data.length">
-    <button type="button" (click)="previous()">Previous</button>
-    <button type="button" (click)="next()">Next</button>
+    <button type="button" (click)="previous()" [disabled]="offset < limit">Previous</button>
+    <button type="button" (click)="next()" [disabled]="offset >= (books.total - limit)">Next</button>
   </div>
 </div>
 
@@ -29,7 +29,7 @@
     <button type="button" (click)="back()">Back</button>
   </div>
   <div>
-    <button type="button" (click)="previous()">Previous</button>
-    <button type="button" (click)="next()">Next</button>
+    <button type="button" (click)="previous()" [disabled]="offset < limit">Previous</button>
+    <button type="button" (click)="next()" [disabled]="offset >= (books.total - limit)">Next</button>
   </div>
 </div>

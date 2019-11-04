@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { SearchCriteria, BooksResponse, BookResponse } from './models';
+import { SearchCriteria, BooksResponse, BookResponse, ReviewResponse } from './models';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
@@ -14,8 +14,8 @@ export class BookService {
       searchCriteria.offset = 0;
     }
     // Get the parameters from searchCriteria
-    const limitTemp = searchCriteria.limit
-    const offsetTemp = searchCriteria.offset
+    const limitTemp = searchCriteria.limit;
+    const offsetTemp = searchCriteria.offset;
     // Set query parameters
     const qs = new HttpParams()
     .set('terms', searchCriteria.terms)
@@ -38,6 +38,17 @@ export class BookService {
     return (
       // Get book detail from backend
       this.http.get<BookResponse>(`/api/book/${bookId}`, { headers: headers }).toPromise()
+    );
+  }
+
+  getBookReviews(bookId: string): Promise<ReviewResponse> {
+    //TODO - for Task 6
+    // Set headers
+    const headers = new HttpHeaders()
+    .set('Accept', 'application/json');
+    return (
+      // Get book reviews using backend and NYT API
+      this.http.get<ReviewResponse>(`/api/book/${bookId}/review`, { headers: headers }).toPromise()
     );
   }
 }

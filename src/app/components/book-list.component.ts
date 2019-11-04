@@ -34,7 +34,6 @@ export class BookListComponent implements OnInit {
     this.bookSvc.getBooks(searchCriterial)
       .then(result => {
         this.books = result;
-        console.log('This is books: ', this.books);
       }).catch(error => {
         const errorResponse = error as ErrorResponse;
         alert(`Status: ${errorResponse.status}\nMessage: ${errorResponse.message}`)
@@ -60,17 +59,14 @@ export class BookListComponent implements OnInit {
         alert(`Status: ${errorResponse.status}\nMessage: ${errorResponse.message}`)
       })
     }
-    // If offset exceeds the length of the book, reduce it
-    if (this.offset > this.books.total) {
-      this.offset = +this.offset - +this.limit;
-    }
   }
 
   previous() {
     //TODO - for Task 4
+    // Decrease the offset
     this.offset = +this.offset - +this.limit;
     // if offset <= 0, dont activate it
-    if (this.offset > 0) {
+    if (this.offset >= 0) {
       const searchNext: SearchCriteria = {
         terms: this.terms,
         limit: this.limit,
@@ -84,16 +80,10 @@ export class BookListComponent implements OnInit {
         alert(`Status: ${errorResponse.status}\nMessage: ${errorResponse.message}`)
       })
     }
-
-    // Resets the offset to 0 if it is negative
-    if (this.offset < 0) {
-      this.offset = 0;
-    }
   }
 
   bookDetails(book_id: string) {
     //TODO
-    console.info('Book id: ', book_id);
     this.router.navigate(['books', book_id]);
   }
 

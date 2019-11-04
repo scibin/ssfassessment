@@ -1,48 +1,85 @@
+<h3>Book details</h3>
 <div *ngIf="bookDetail.data">
-    <div>
-        Title: {{ bookDetail.data.title }}
-    </div>
+    <table>
+        <tr>
+            <td><span>Title:</span></td>
+            <td><span>{{ bookDetail.data.title }}</span></td>
+        </tr>
+        <tr>
+            <td><span>Format:</span></td>
+            <td><span>{{ bookDetail.data.format }}</span></td>
+        </tr>
+        <tr>
+            <td><span>Authors:</span></td>
+            <td><span>{{ bookDetail.data.authors.join(', ') }}</span></td>
+        </tr>
+        <tr>
+            <td><span>Number of pages:</span></td>
+            <td><span>{{ bookDetail.data.pages }}</span></td>
+        </tr>
+        <tr>
+            <td><span>Rating:</span></td>
+            <td><span>{{ bookDetail.data.rating }}</span></td>
+        </tr>
+        <tr>
+            <td><span>Rating count:</span></td>
+            <td><span>{{ bookDetail.data.rating_count }}</span></td>
+        </tr>
+        <tr>
+            <td><span>Review count:</span></td>
+            <td><span>{{ bookDetail.data.review_count }}</span></td>
+        </tr>
+        <div *ngIf="bookDetail.data.edition">
+            <tr>
+                <td><span>Edition:</span></td>
+                <td><span>{{ bookDetail.data.edition }}</span></td>
+            </tr>
+        </div>
+    </table>
     <br>
     <div>
-        Edition: {{ bookDetail.data.edition }}
+        Genres: {{ bookDetail.data.genres.join(', ') }}
     </div>
     <br>
-    <div>
-        Format: {{ bookDetail.data.format }}
-    </div>
-    <br>
-    <div>
-        {{ bookDetail.data.authors.join(', ') }}
-    </div>
-    <br>
-    <div>
-        Number of pages: {{ bookDetail.data.pages }}
-    </div>
-    <br>
-    <div>
-        {{ bookDetail.data.description }}
-    </div>
-    <br>
-    <div>
-        Rating: {{ bookDetail.data.rating }}
-    </div>
-    <br>
-    <div>
-        Rating count: {{ bookDetail.data.rating_count }}
-    </div>
-    <br>
-    <div>
-        Review count: {{ bookDetail.data.review_count }}
-    </div>
-    <br>
-    <div>
-        {{ bookDetail.data.genres.join(', ') }}
+    <div class='description'>
+        Description: {{ bookDetail.data.description }}
     </div>
     <br>
     <div>
         <img [src]="bookDetail.data.image_url">
     </div>
+    <br>
+</div>
+<br>
 
+<h3>Book reviews</h3>
+<div *ngIf="bookReviews.data.length > 0">
+    <div *ngFor="let review of bookReviews.data; let i = index;">
+        <div class='review'>
+        <table>
+            <tr>
+                <td><span>Title:</span></td>
+                <td><span>{{ review.title }}</span></td>
+            </tr>
+            <tr>
+                <td><span>Author(s):</span></td>
+                <td><span>{{ review.authors }}</span></td>
+            </tr>
+            <tr>
+                <td><span>Reviewed by:</span></td>
+                <td><span>{{ review.byline }}</span></td>
+            </tr>
+            <tr>
+                <td><span>Summary:</span></td>
+                <td><span>{{ review.summary }}</span></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><a [href]="review.url">Link to review</a></td>
+            </tr>
+        </table>
+        </div>
+    </div>
 </div>
 
 <br>

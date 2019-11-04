@@ -1,8 +1,9 @@
 // || Init, setup and load the libraries
 const express = require('express');
-const path = require('path');
+// const path = require('path');
 const cors = require('cors');
 // const moment = require('moment');
+const request = require('request-promise-native');
 
 // Required local files
 // Require createpool function with SQL user/password
@@ -11,6 +12,8 @@ const pool = require('./database');
 const mkQuery = require('./dbfnhelper');
 // New York Times dev API key
 const NYT_API_KEY = require('./config').NYTIMES_API_KEY;
+// New York Times API URL
+const NYT_API_URL = 'https://api.nytimes.com/svc/books/v3/reviews.json';
 
 // Initialize application port
 const PORT = parseInt(process.argv[2] || process.env.APP_PORT) || 3001;
@@ -33,21 +36,13 @@ const app = express();
 // CORS
 app.use(cors());
 
-// Initialize static content
-// app.use(express.static(path.join(__dirname, '../', 'dist', 'day14workshop')));
-// app.use(express.static(path.join(__dirname, 'public')));
-
-
 // User body parser to read body objects
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
-// app.use(bodyParser.json({limit: '50mb'}));
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.urlencoded());
 
 // || Define requests the app will be handling
 
+// Task 3
 // Conduct a search with parameters: terms, limit and offset
 app.get('/api/search', (req, res) => {
     // Check if terms is undefined, return error if undefined
@@ -99,11 +94,11 @@ app.get('/api/search', (req, res) => {
     })
 })
 
+// Task 5
 // Get a book's details
 app.get('/api/book/:bookid', (req, res) => {
     // Gets the id of the book
     const bookId = req.params.bookid;
-    console.log('This is bookId: ', bookId);
     // Query the book from database
     queryBook([ bookId ])
     .then(result => {
@@ -135,6 +130,71 @@ app.get('/api/book/:bookid', (req, res) => {
     })
 })
 
+// Task 6
+// Use NYT API to get book reviews
+// http://localhost:4200/api/book/c170603a/review
+app.get('/api/book/:bookid/review', (req, res) => {
+    // Gets the id of the book
+    const bookId = req.params.bookid;
+    // Search for the title of the book
+    queryBook([ bookId ])
+    .then(result => {
+        const bookTitle = result[0].title;
+        // Get book's authors if required. Will be in an array
+        // const bookAuthors = result[0].authors.split('|');
+        return (bookTitle);
+    })
+    // After getting the title of the book, query it using the NYT API
+    .then(bookTitle => {
+        const NYToptions = {
+            url: NYT_API_URL,
+            qs: {
+                'api-key': NYT_API_KEY,
+                title: bookTitle,
+            },
+            headers: {
+                'Accept': 'application/json'
+            },
+        };
+        return(
+            request.get(NYToptions, (error, response, body) => {
+                return(body);
+            })
+        );
+    })
+    // Return the response back to front end
+    .then(API_Result => {
+        // Note: Takes the results of the search
+        const tempContainer = JSON.parse(API_Result);
+        const bookReview = tempContainer.results.map(v => {
+            return({
+                book_id: bookId,
+                title: v.book_title,
+                authors: v.book_author,
+                byline: v.byline,
+                summary: v.summary,
+                url: v.url
+            })
+        })
+        const reviewResObj = {
+            data: bookReview,
+            timestamp: (new Date()).getTime()
+        }
+        // No processing needed to return empty array for data
+        // if book title is not found via NYT API
+        res.status(200).json(reviewResObj);
+    })
+    // Log an errors
+    .catch(err => {
+        console.log(err);
+        res.json({
+            status: 500,
+            message: 'Internal server error!',
+            timestamp: (new Date()).getTime()
+        })
+    });
+})
+
 // !!! Add error.html!
 // Catch-all
 app.use((req, res, next) => {
@@ -145,7 +205,3 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
     console.info(`Webserver at port ${PORT}`);
 });
-
-
-
-
